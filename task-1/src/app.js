@@ -20,8 +20,12 @@ app.get("/api/hello", async (req, res, next) => {
   try {
     const visitorName = req.query.visitor_name;
 
+    var ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+
+    console.log({ ip });
+
     await axios
-      .get(`https://ipinfo.io`)
+      .get(`https://ipapi.co/json/`)
       .then(async (response) => {
         const data = response.data;
 
