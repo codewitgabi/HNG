@@ -22,24 +22,22 @@ app.get("/api/hello", async (req, res, next) => {
 
     var ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
 
-    console.log({ ip });
-
     await axios
-      .get(`https://ipapi.co/json/`)
+      .get(`https://ipapi.co/city`)
       .then(async (response) => {
         const data = response.data;
 
         await axios
           .get(
-            `http://api.openweathermap.org/data/2.5/weather?appid=${openweathermap_api_key}&q=${data.city}`
+            `http://api.openweathermap.org/data/2.5/weather?appid=${openweathermap_api_key}&q=${data}`
           )
           .then((response) => {
             res.status(200).json({
-              client_ip: data.ip,
-              location: data.city,
+              client_ip: ip,
+              location: data,
               greeting: `Hello, ${visitorName}!, the temperature is ${Math.round(
                 response.data.main.temp - 273
-              )} degrees Celcius in ${data.city}`,
+              )} degrees Celcius in ${data}`,
             });
           })
           .catch((error) => next(error));
