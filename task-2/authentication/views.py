@@ -1,7 +1,3 @@
-# builtin imports
-
-from typing import Self
-
 # third-party imports
 
 from django.http import HttpRequest, HttpResponse
@@ -26,7 +22,7 @@ class UserRegistrationView(APIView):
     """
 
     @transaction.atomic()
-    def post(self: Self, request: HttpRequest) -> HttpResponse:
+    def post(self, request: HttpRequest) -> HttpResponse:
         serializer = UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -56,7 +52,7 @@ class UserRegistrationView(APIView):
 
 
 class LoginView(APIView):
-    def post(self: Self, request: HttpRequest) -> HttpResponse:
+    def post(self, request: HttpRequest) -> HttpResponse:
         serializer = LoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
