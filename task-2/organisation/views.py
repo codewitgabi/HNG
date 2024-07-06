@@ -52,6 +52,7 @@ class GetOrganisation(APIView):
 
     def get(self, request, orgId: str):
         organisation = request.user.organisations.get(orgId=orgId)
+        print(organisation)
         serializer = OrganisationSerializer(organisation)
 
         return Response(

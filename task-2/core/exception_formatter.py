@@ -33,24 +33,15 @@ def exception_handler(exc, context):
         response.status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
     else:
         response = standardized_exception_handler(exc, context)
+        print(response.data)
         custom_response_data = {
             "status": STATUS_CODE_MESSAGES.get(response.status_code),
-            "message": response.data.get("message", "An error occurred"),
+            "message": response.data.get(
+                "message", STATUS_CODE_MESSAGES.get(response.status_code)
+            ),
             "statusCode": response.status_code,
         }
 
         response.data = custom_response_data
 
     return response
-
-
-class ExceptionFormatter(BaseExceptionFormatter):
-    def format_error_response(self, error_response: ErrorResponse):
-        print(dir(error_response.errors[0]))
-        error = error_response.errors[0]
-
-        return {
-            "status": error.code,
-            "message": "Registration unsuccessful",
-            "statusCode": error.code,
-        }

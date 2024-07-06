@@ -1,9 +1,8 @@
 import json
 from django.test import Client, TestCase
-from django.urls import reverse
-from organisation.models import Organisation
 from django.contrib.auth import get_user_model
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import AccessToken
+from datetime import datetime
 
 
 User = get_user_model()
@@ -24,6 +23,10 @@ class AuthTests(TestCase):
         self.client = Client()
 
     def test_successful_registration(self):
+        """
+        * It Should Register User Successfully with Default Organisation:Ensure a user is registered successfully when no organisation details are provided.
+        """
+
         response = self.client.post(
             "/auth/register",
             {
@@ -59,7 +62,9 @@ class AuthTests(TestCase):
         """
 
         self.assertEqual(response.status_code, 201)
-        self.assertJSONEqual(json.dumps(response.json()), expected_response)
+        self.assertJSONEqual(
+            json.dumps(response.json()), expected_response
+        )  # Check that the response contains the expected user details and access token.
 
         """
          * organisation test
@@ -71,6 +76,12 @@ class AuthTests(TestCase):
         self.assertEqual(organisation.name, "Test's Organisation")
 
     def test_missing_firstName(self):
+        """
+        * It Should Fail If Required Fields Are Missing:Test cases for each required field (firstName, lastName, email, password) missing.
+
+        * Verify the response contains a status code of 422 and appropriate error messages.
+        """
+
         response = self.client.post(
             "/auth/register",
             {
@@ -89,6 +100,12 @@ class AuthTests(TestCase):
         self.assertJSONEqual(json.dumps(response.json()), expected_response)
 
     def test_missing_lastName(self):
+        """
+        * It Should Fail If Required Fields Are Missing:Test cases for each required field (firstName, lastName, email, password) missing.
+
+        * Verify the response contains a status code of 422 and appropriate error messages.
+        """
+
         response = self.client.post(
             "/auth/register",
             {
@@ -107,6 +124,12 @@ class AuthTests(TestCase):
         self.assertJSONEqual(json.dumps(response.json()), expected_response)
 
     def test_missing_email(self):
+        """
+        * It Should Fail If Required Fields Are Missing:Test cases for each required field (firstName, lastName, email, password) missing.
+
+        * Verify the response contains a status code of 422 and appropriate error messages.
+        """
+
         response = self.client.post(
             "/auth/register",
             {
@@ -125,6 +148,12 @@ class AuthTests(TestCase):
         self.assertJSONEqual(json.dumps(response.json()), expected_response)
 
     def test_missing_password(self):
+        """
+        * It Should Fail If Required Fields Are Missing:Test cases for each required field (firstName, lastName, email, password) missing.
+
+        * Verify the response contains a status code of 422 and appropriate error messages.
+        """
+
         response = self.client.post(
             "/auth/register",
             {
@@ -143,6 +172,11 @@ class AuthTests(TestCase):
         self.assertJSONEqual(json.dumps(response.json()), expected_response)
 
     def test_duplicate_email(self):
+        """
+        * It Should Fail if there's Duplicate Email or UserID:Attempt to register two users with the same email.
+
+        * Verify the response contains a status code of 422 and appropriate error messages.
+        """
         response = self.client.post(
             "/auth/register",
             {
@@ -162,6 +196,12 @@ class AuthTests(TestCase):
         self.assertJSONEqual(json.dumps(response.json()), expected_response)
 
     def test_login_with_valid_credentials(self):
+        """
+        * It Should Log the user in successfully:Ensure a user is logged in successfully when a valid credential is provided and fails otherwise.
+
+        * Ensure token expires at the correct time and correct user details is found in token.
+        """
+
         response = self.client.post(
             "/auth/login", {"email": "default@gmail.com", "password": "12345"}
         )
@@ -181,8 +221,16 @@ class AuthTests(TestCase):
             },
         }
 
+        decoded_token = AccessToken(response.json()["data"]["accessToken"])
+        expiration_time = datetime.fromtimestamp(decoded_token["exp"])
+
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(json.dumps(response.json()), expected_response)
+        self.assertJSONEqual(
+            json.dumps(response.json()), expected_response
+        )  # Check that the response contains the expected user details and access token.
+        self.assertAlmostEqual(
+            (expiration_time - datetime.now()).seconds, 3600, delta=5
+        )  # Ensure token expires at the correct time and correct user details is found in token.
 
     def test_login_with_invalid_credentials(self):
         response = self.client.post(

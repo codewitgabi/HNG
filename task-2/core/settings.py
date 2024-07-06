@@ -123,7 +123,7 @@ REST_FRAMEWORK = {
 
 DRF_STANDARDIZED_ERRORS = {
     "ENABLE_IN_DEBUG_FOR_UNHANDLED_EXCEPTIONS": True,
-    "EXCEPTION_FORMATTER_CLASS": "core.exception_formatter.ExceptionFormatter",
+    # "EXCEPTION_FORMATTER_CLASS": "core.exception_formatter.ExceptionFormatter",
 }
 
 SIMPLE_JWT = {
