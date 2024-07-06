@@ -43,7 +43,7 @@ class UserRegistrationView(APIView):
                         "firstName": user.firstName,
                         "lastName": user.lastName,
                         "email": user.email,
-                        "phone": user.phone.as_e164,
+                        "phone": user.phone.as_e164 if user.phone else None,
                     },
                 },
             },
@@ -64,8 +64,9 @@ class LoginView(APIView):
                 {
                     "status": "Bad request",
                     "message": "Authentication failed",
-                    "statusCode": 401,
-                }
+                    "statusCode": status.HTTP_401_UNAUTHORIZED,
+                },
+                status=status.HTTP_401_UNAUTHORIZED,
             )
 
         user = User.objects.get(email=email)
@@ -75,8 +76,9 @@ class LoginView(APIView):
                 {
                     "status": "Bad request",
                     "message": "Authentication failed",
-                    "statusCode": 401,
-                }
+                    "statusCode": status.HTTP_401_UNAUTHORIZED,
+                },
+                status=status.HTTP_401_UNAUTHORIZED,
             )
 
         # create access token
@@ -94,7 +96,7 @@ class LoginView(APIView):
                         "firstName": user.firstName,
                         "lastName": user.lastName,
                         "email": user.email,
-                        "phone": user.phone.as_e164,
+                        "phone": user.phone.as_e164 if user.phone else None,
                     },
                 },
             },

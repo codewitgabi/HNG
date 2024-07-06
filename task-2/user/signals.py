@@ -11,9 +11,7 @@ User = get_user_model()
 def create_profile(sender, instance, created, **kwargs):
     if created:
         organisation = Organisation.objects.create(
-            name=f"{instance.firstName}'s Organisation "
+            name=f"{instance.firstName}'s Organisation"
         )
         instance.organisations.add(organisation)
         instance.save()
-
-        print(organisation)
