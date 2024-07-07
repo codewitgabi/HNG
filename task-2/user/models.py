@@ -12,7 +12,7 @@ class User(AbstractBaseUser):
     email = models.EmailField(
         unique=True, error_messages={"unique": "User with email already exists"}
     )
-    phone = PhoneNumberField(region="NG", blank=True, null=True)
+    phone = models.CharField(max_length=15, null=True, blank=True)
     organisations = models.ManyToManyField("organisation.Organisation", blank=True)
     last_login = None
 

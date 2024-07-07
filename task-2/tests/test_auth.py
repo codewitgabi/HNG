@@ -216,7 +216,7 @@ class AuthTests(TestCase):
                     "firstName": self.default_user.firstName,
                     "lastName": self.default_user.lastName,
                     "email": self.default_user.email,
-                    "phone": self.default_user.phone.as_e164,
+                    "phone": self.default_user.phone,
                 },
             },
         }

@@ -1,5 +1,4 @@
 import json
-from django.urls import reverse
 from django.test import Client, TestCase
 from django.contrib.auth import get_user_model
 
