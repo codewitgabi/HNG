@@ -19,6 +19,7 @@ class GetUserDetail(APIView):
     def get(self, request, id):
         auth_user = request.user
         userOrgs = auth_user.organisations.all()
+        
         try:
             user = User.objects.get(userId=id)
         except User.DoesNotExist:

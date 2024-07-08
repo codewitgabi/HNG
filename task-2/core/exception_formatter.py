@@ -13,8 +13,8 @@ from drf_standardized_errors.handler import (
 
 STATUS_CODE_MESSAGES = {
     400: "Bad request",
-    401: "Unauthorized",
-    403: "Forbidden",
+    401: "Authentication failed",
+    403: "Bad request",
     405: "Method not allowed",
     404: "Not found",
     500: "Internal server error",
@@ -33,9 +33,8 @@ def exception_handler(exc, context):
         response.status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
     else:
         response = standardized_exception_handler(exc, context)
-        print(response.data)
         custom_response_data = {
-            "status": STATUS_CODE_MESSAGES.get(response.status_code),
+            "status": "Bad request",
             "message": response.data.get(
                 "message", STATUS_CODE_MESSAGES.get(response.status_code)
             ),

@@ -189,10 +189,12 @@ class AuthTests(TestCase):
         )
 
         expected_response = {
-            "errors": [{"field": "email", "message": "User with email already exists"}]
+            "status": "Bad request",
+            "message": "Registration unsuccessful",
+            "statusCode": 400,
         }
 
-        self.assertEqual(response.status_code, 422)
+        self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(json.dumps(response.json()), expected_response)
 
     def test_login_with_valid_credentials(self):

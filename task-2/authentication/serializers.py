@@ -1,11 +1,14 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from rest_framework.response import Response
 
 
 User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField()
+
     class Meta:
         model = User
         fields = ["userId", "firstName", "lastName", "email", "password", "phone"]

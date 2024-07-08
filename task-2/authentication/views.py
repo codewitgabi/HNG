@@ -26,6 +26,18 @@ class UserRegistrationView(APIView):
         serializer = UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
+        email = serializer.validated_data.get("email")
+
+        if User.objects.filter(email=email).exists():
+            return Response(
+                {
+                    "status": "Bad request",
+                    "message": "Registration unsuccessful",
+                    "statusCode": 400,
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         user = serializer.save()
 
         # create access token
