@@ -1,0 +1,129 @@
+Project DynamoApi {
+  Note: "stage-three backend task HNG"
+  database: "postgres"
+  members: '''
+    kariuki.w.agnes@gmail.com,
+    chukssomzzy@gmail.com,
+    davidifebueme@gmail.com,
+    codewitgabi222@gmail.com,
+    ikehfranklin06@gmail.com
+    '''
+}
+
+
+Table User {
+  id big_auto [pk, unique]
+  userId uuid [unique, default:`uuid.uuid4()`]
+  firstName char 
+  lastName char 
+  email_address email [unique]
+  password char 
+  is_active boolean [default:`True`]
+  date_created date_time 
+  last_updated date_time 
+  is_superadmin boolean [default:`False`]
+  referral_code char 
+}
+
+
+Table Organisation {
+  id big_auto [pk, unique]
+  orgId uuid [unique, default:`uuid.uuid4()`]
+  name char 
+  description text 
+}
+
+
+Table organisation_users {
+  user_id auto [pk]
+  organisation_id auto [pk]
+}
+ref: Organisation.id > organisation_users.organisation_id
+ref: User.id > organisation_users.user_id
+
+
+Table WaitList {
+  id big_auto [pk, unique]
+  email_address email [unique]
+}
+
+
+Table Profile {
+  id big_auto [pk, unique]
+  user one_to_one [unique]
+  profile_picture image [null]
+  display_name char 
+  bio text 
+  date_of_birth date 
+  gender char 
+}
+ref: Profile.user - User.id
+
+
+Table Settings {
+  id big_auto [pk, unique]
+  user one_to_one [unique]
+  dark_mode boolean [default:`False`]
+  notifications_enabled boolean [default:`True`]
+  receive_newsletters boolean [default:`True`]
+}
+ref: Settings.user - User.id
+
+
+Table Email {
+  id big_auto [pk, unique]
+  author foreign_key [null]
+  subject char 
+  body text 
+  date_created date_time 
+  last_updated date_time 
+  to_email email 
+  sent_at date_time 
+  status char 
+}
+ref: Email.author > User.id
+
+
+Table BlogPost {
+  id big_auto [pk, unique]
+  author foreign_key [null]
+  blog_id uuid [unique, default:`uuid.uuid4()`]
+  title char 
+  content text 
+  date_created date_time 
+  last_updated date_time 
+  views integer 
+  is_published boolean [default:`False`]
+}
+ref: BlogPost.author > User.id
+
+
+Table Comment {
+  id big_auto [pk, unique]
+  author foreign_key 
+  post foreign_key 
+  content text 
+  created_at date_time 
+}
+ref: Comment.author > User.id
+ref: Comment.post > BlogPost.id
+
+
+Table BlackListToken {
+  id big_auto [pk, unique]
+  created_by foreign_key 
+  token char 
+  date_created date_time 
+}
+ref: BlackListToken.created_by > User.id
+
+
+Table Notification {
+  id big_auto [pk, unique]
+  owner foreign_key 
+  notification_id uuid [unique, default:`uuid.uuid4()`]
+  message text 
+  read boolean [default:`False`]
+  date_created date_time 
+}
+ref: Notification.owner > User.id
